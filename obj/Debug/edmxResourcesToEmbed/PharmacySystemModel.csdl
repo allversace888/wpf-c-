@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="PharmacyInformationSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="account">
+    <Key>
+      <PropertyRef Name="login" />
+    </Key>
+    <Property Name="login" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="password" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="id_role" Type="Int32" Nullable="false" />
+    <Property Name="second_name" Type="String" MaxLength="65" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="first_name" Type="String" MaxLength="65" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="surname" Type="String" MaxLength="65" FixedLength="false" Unicode="false" />
+    <Property Name="telephone" Type="String" MaxLength="12" FixedLength="true" Unicode="false" />
+    <NavigationProperty Name="role" Relationship="Self.FK__account__id_role__2E1BDC42" FromRole="account" ToRole="role" />
+    <NavigationProperty Name="indent" Relationship="Self.FK__indent__login__30F848ED" FromRole="account" ToRole="indent" />
+  </EntityType>
+  <EntityType Name="country">
+    <Key>
+      <PropertyRef Name="id_country" />
+    </Key>
+    <Property Name="id_country" Type="Int32" Nullable="false" />
+    <Property Name="country1" Type="String" MaxLength="65" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="producer" Relationship="Self.FK__producer__id_cou__286302EC" FromRole="country" ToRole="producer" />
+  </EntityType>
+  <EntityType Name="indent">
+    <Key>
+      <PropertyRef Name="id_indent" />
+    </Key>
+    <Property Name="id_indent" Type="Int32" Nullable="false" />
+    <Property Name="login" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="data_indent" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="data_delivery" Type="DateTime" Precision="0" />
+    <NavigationProperty Name="account" Relationship="Self.FK__indent__login__30F848ED" FromRole="indent" ToRole="account" />
+    <NavigationProperty Name="order_details" Relationship="Self.FK__order_det__id_in__33D4B598" FromRole="indent" ToRole="order_details" />
+  </EntityType>
+  <EntityType Name="order_details">
+    <Key>
+      <PropertyRef Name="id_indent" />
+      <PropertyRef Name="id_preparation" />
+    </Key>
+    <Property Name="id_indent" Type="Int32" Nullable="false" />
+    <Property Name="id_preparation" Type="Int32" Nullable="false" />
+    <Property Name="amount" Type="Int32" />
+    <NavigationProperty Name="indent" Relationship="Self.FK__order_det__id_in__33D4B598" FromRole="order_details" ToRole="indent" />
+    <NavigationProperty Name="preparation" Relationship="Self.FK__order_det__id_pr__34C8D9D1" FromRole="order_details" ToRole="preparation" />
+  </EntityType>
+  <EntityType Name="preparation">
+    <Key>
+      <PropertyRef Name="id_preparation" />
+    </Key>
+    <Property Name="id_preparation" Type="Int32" Nullable="false" />
+    <Property Name="id_producer" Type="Int32" Nullable="false" />
+    <Property Name="release_form" Type="String" MaxLength="65" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="day_dosage" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+    <Property Name="drug_name" Type="String" MaxLength="65" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="price" Type="Int32" Nullable="false" />
+    <Property Name="amount" Type="Int32" />
+    <NavigationProperty Name="order_details" Relationship="Self.FK__order_det__id_pr__34C8D9D1" FromRole="preparation" ToRole="order_details" />
+    <NavigationProperty Name="producer" Relationship="Self.FK__preparati__id_pr__2B3F6F97" FromRole="preparation" ToRole="producer" />
+  </EntityType>
+  <EntityType Name="producer">
+    <Key>
+      <PropertyRef Name="id_producer" />
+    </Key>
+    <Property Name="id_producer" Type="Int32" Nullable="false" />
+    <Property Name="id_country" Type="Int32" Nullable="false" />
+    <Property Name="company_name" Type="String" MaxLength="65" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="country" Relationship="Self.FK__producer__id_cou__286302EC" FromRole="producer" ToRole="country" />
+    <NavigationProperty Name="preparation" Relationship="Self.FK__preparati__id_pr__2B3F6F97" FromRole="producer" ToRole="preparation" />
+  </EntityType>
+  <EntityType Name="role">
+    <Key>
+      <PropertyRef Name="id_role" />
+    </Key>
+    <Property Name="id_role" Type="Int32" Nullable="false" />
+    <Property Name="status" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="account" Relationship="Self.FK__account__id_role__2E1BDC42" FromRole="role" ToRole="account" />
+  </EntityType>
+  <Association Name="FK__account__id_role__2E1BDC42">
+    <End Role="role" Type="Self.role" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="account" Type="Self.account" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="role">
+        <PropertyRef Name="id_role" />
+      </Principal>
+      <Dependent Role="account">
+        <PropertyRef Name="id_role" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__indent__login__30F848ED">
+    <End Role="account" Type="Self.account" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="indent" Type="Self.indent" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="account">
+        <PropertyRef Name="login" />
+      </Principal>
+      <Dependent Role="indent">
+        <PropertyRef Name="login" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__producer__id_cou__286302EC">
+    <End Role="country" Type="Self.country" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="producer" Type="Self.producer" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="country">
+        <PropertyRef Name="id_country" />
+      </Principal>
+      <Dependent Role="producer">
+        <PropertyRef Name="id_country" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__order_det__id_in__33D4B598">
+    <End Role="indent" Type="Self.indent" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="order_details" Type="Self.order_details" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="indent">
+        <PropertyRef Name="id_indent" />
+      </Principal>
+      <Dependent Role="order_details">
+        <PropertyRef Name="id_indent" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__order_det__id_pr__34C8D9D1">
+    <End Role="preparation" Type="Self.preparation" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="order_details" Type="Self.order_details" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="preparation">
+        <PropertyRef Name="id_preparation" />
+      </Principal>
+      <Dependent Role="order_details">
+        <PropertyRef Name="id_preparation" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__preparati__id_pr__2B3F6F97">
+    <End Role="producer" Type="Self.producer" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="preparation" Type="Self.preparation" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="producer">
+        <PropertyRef Name="id_producer" />
+      </Principal>
+      <Dependent Role="preparation">
+        <PropertyRef Name="id_producer" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="PharmacyInformationSystemEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="account" EntityType="Self.account" />
+    <EntitySet Name="country" EntityType="Self.country" />
+    <EntitySet Name="indent" EntityType="Self.indent" />
+    <EntitySet Name="order_details" EntityType="Self.order_details" />
+    <EntitySet Name="preparation" EntityType="Self.preparation" />
+    <EntitySet Name="producer" EntityType="Self.producer" />
+    <EntitySet Name="role" EntityType="Self.role" />
+    <AssociationSet Name="FK__account__id_role__2E1BDC42" Association="Self.FK__account__id_role__2E1BDC42">
+      <End Role="role" EntitySet="role" />
+      <End Role="account" EntitySet="account" />
+    </AssociationSet>
+    <AssociationSet Name="FK__indent__login__30F848ED" Association="Self.FK__indent__login__30F848ED">
+      <End Role="account" EntitySet="account" />
+      <End Role="indent" EntitySet="indent" />
+    </AssociationSet>
+    <AssociationSet Name="FK__producer__id_cou__286302EC" Association="Self.FK__producer__id_cou__286302EC">
+      <End Role="country" EntitySet="country" />
+      <End Role="producer" EntitySet="producer" />
+    </AssociationSet>
+    <AssociationSet Name="FK__order_det__id_in__33D4B598" Association="Self.FK__order_det__id_in__33D4B598">
+      <End Role="indent" EntitySet="indent" />
+      <End Role="order_details" EntitySet="order_details" />
+    </AssociationSet>
+    <AssociationSet Name="FK__order_det__id_pr__34C8D9D1" Association="Self.FK__order_det__id_pr__34C8D9D1">
+      <End Role="preparation" EntitySet="preparation" />
+      <End Role="order_details" EntitySet="order_details" />
+    </AssociationSet>
+    <AssociationSet Name="FK__preparati__id_pr__2B3F6F97" Association="Self.FK__preparati__id_pr__2B3F6F97">
+      <End Role="producer" EntitySet="producer" />
+      <End Role="preparation" EntitySet="preparation" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

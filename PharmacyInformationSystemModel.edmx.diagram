@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="375b32a30b8643e68a3e47222bc34ec3" Name="Diagram1">
+        <EntityTypeShape EntityType="PharmacyInformationSystemModel.account" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="PharmacyInformationSystemModel.indent" Width="1.5" PointX="5.25" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="PharmacyInformationSystemModel.order_details" Width="1.5" PointX="7.5" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="PharmacyInformationSystemModel.preparation" Width="1.5" PointX="5.25" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="PharmacyInformationSystemModel.role" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
+        <AssociationConnector Association="PharmacyInformationSystemModel.FK__account__id_role__5535A963" ManuallyRouted="false" />
+        <AssociationConnector Association="PharmacyInformationSystemModel.FK__indent__login__5812160E" ManuallyRouted="false" />
+        <AssociationConnector Association="PharmacyInformationSystemModel.FK__order_det__id_in__5AEE82B9" ManuallyRouted="false" />
+        <AssociationConnector Association="PharmacyInformationSystemModel.FK__order_det__id_pr__5BE2A6F2" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

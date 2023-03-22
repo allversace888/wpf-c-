@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Хранилище PharmacyInformationSystemModelContainer" CdmEntityContainer="PharmacyInformationSystemEntities">
+    <EntitySetMapping Name="account">
+      <EntityTypeMapping TypeName="PharmacyInformationSystemModel.account">
+        <MappingFragment StoreEntitySet="account">
+          <ScalarProperty Name="login" ColumnName="login" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="id_role" ColumnName="id_role" />
+          <ScalarProperty Name="second_name" ColumnName="second_name" />
+          <ScalarProperty Name="first_name" ColumnName="first_name" />
+          <ScalarProperty Name="surname" ColumnName="surname" />
+          <ScalarProperty Name="telephone" ColumnName="telephone" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="country">
+      <EntityTypeMapping TypeName="PharmacyInformationSystemModel.country">
+        <MappingFragment StoreEntitySet="country">
+          <ScalarProperty Name="id_country" ColumnName="id_country" />
+          <ScalarProperty Name="country1" ColumnName="country" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="indent">
+      <EntityTypeMapping TypeName="PharmacyInformationSystemModel.indent">
+        <MappingFragment StoreEntitySet="indent">
+          <ScalarProperty Name="id_indent" ColumnName="id_indent" />
+          <ScalarProperty Name="login" ColumnName="login" />
+          <ScalarProperty Name="data_indent" ColumnName="data_indent" />
+          <ScalarProperty Name="data_delivery" ColumnName="data_delivery" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="order_details">
+      <EntityTypeMapping TypeName="PharmacyInformationSystemModel.order_details">
+        <MappingFragment StoreEntitySet="order_details">
+          <ScalarProperty Name="id_indent" ColumnName="id_indent" />
+          <ScalarProperty Name="id_preparation" ColumnName="id_preparation" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="preparation">
+      <EntityTypeMapping TypeName="PharmacyInformationSystemModel.preparation">
+        <MappingFragment StoreEntitySet="preparation">
+          <ScalarProperty Name="id_preparation" ColumnName="id_preparation" />
+          <ScalarProperty Name="id_producer" ColumnName="id_producer" />
+          <ScalarProperty Name="release_form" ColumnName="release_form" />
+          <ScalarProperty Name="day_dosage" ColumnName="day_dosage" />
+          <ScalarProperty Name="drug_name" ColumnName="drug_name" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="amount" ColumnName="amount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="producer">
+      <EntityTypeMapping TypeName="PharmacyInformationSystemModel.producer">
+        <MappingFragment StoreEntitySet="producer">
+          <ScalarProperty Name="id_producer" ColumnName="id_producer" />
+          <ScalarProperty Name="id_country" ColumnName="id_country" />
+          <ScalarProperty Name="company_name" ColumnName="company_name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="role">
+      <EntityTypeMapping TypeName="PharmacyInformationSystemModel.role">
+        <MappingFragment StoreEntitySet="role">
+          <ScalarProperty Name="id_role" ColumnName="id_role" />
+          <ScalarProperty Name="status" ColumnName="status" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
