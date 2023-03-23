@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -75,45 +75,38 @@ namespace sql
             DataGridBasket.Visibility = Visibility.Hidden;
             LViewPreparation.Visibility = Visibility.Visible;
             Search.Visibility = Visibility.Visible;
+            SetBasket.Visibility = Visibility.Hidden;
         }
         private void Basket_Click(object sender, RoutedEventArgs e)
         {
             LViewPreparation.Visibility = Visibility.Hidden;
             Search.Visibility = Visibility.Hidden;
             DataGridBasket.Visibility = Visibility.Visible;
+            SetBasket.Visibility = Visibility.Visible;
         }
 
-        private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        public List<order_details> Order_DetailsList = new List<order_details>();
+        private void BasketAdd_Click(object sender, RoutedEventArgs e)
         {
-            LViewPreparation.Visibility = Visibility.Hidden;
-            Search.Visibility = Visibility.Hidden;
-            DataGridBasket.Visibility = Visibility.Visible;
-
-            using (PharmacySystemEntities db = new PharmacySystemEntities())
+            preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
+            order_details order_Details = new order_details
             {
-                var indentCurrent = new indent
-                {
-                    data_indent = DateTime.Now,
-                    login = PreviewLogin.Text
-                };
-                db.indent.Add(indentCurrent);
-
-                var selectedPreparation = LViewPreparation.SelectedItems.Cast<preparation>().ToList();
-                foreach (var item in selectedPreparation)
-                {
-                    var orderDetailsCurrent = new order_details
-                    {
-                        id_indent = indentCurrent.id_indent,
-                        id_preparation = item.id_preparation,
-                        amount = 1
-                    };
-                    db.order_details.Add(orderDetailsCurrent);
-                }
-                db.SaveChanges();
-
-                var orderCurrent = db.order_details.Where(p => p.id_indent == indentCurrent.id_indent).ToList();
-                DataGridBasket.ItemsSource = orderCurrent;
-            }
+                id_preparation = selectedPreparation.id_preparation,
+                amount = 1
+            };
+            Order_DetailsList.Add(order_Details);
+        }
+        private void SetBasket_Click(object sender, RoutedEventArgs e)
+        {
+            indent indent = new indent
+            {
+                login = PreviewLogin.Text,
+                data_indent = DateTime.Now,
+                order_details = Order_DetailsList
+            };
+            PharmacySystemEntities.GetContext().indent.Add(indent);
+            PharmacySystemEntities.GetContext().SaveChanges();
+            Order_DetailsList.Clear();
         }
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -129,11 +122,5 @@ namespace sql
             UpdatePreparation();
         }
 
-        private void SetBasket_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("все оке");
-            
-            PharmacySystemEntities.GetContext().SaveChanges();
-        }
     }
 }
