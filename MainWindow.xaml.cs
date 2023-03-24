@@ -91,6 +91,7 @@ namespace sql
         public List<order_details> Order_DetailsList = new List<order_details>();
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
+            List<object> objects = new List<object>();
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
             var order_DetailsView = Order_DetailsList.Select(x => new
             {
@@ -101,7 +102,6 @@ namespace sql
                 
             });
             //Order_DetailsList.Add(order_DetailsView);
-            List<object> objects = new List<object>();
             objects.AddRange(order_DetailsView);
             DataGridBasket.ItemsSource = order_DetailsView;
             
