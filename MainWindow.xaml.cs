@@ -91,8 +91,8 @@ namespace sql
         public List<order_details> Order_DetailsList = new List<order_details>();
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            List<object> objects = new List<object>();
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
+            //Order_DetailsList.Add(order_DetailsView);
             var order_DetailsView = Order_DetailsList.Select(x => new
             {
                 Имя = selectedPreparation.id_preparation,
@@ -101,10 +101,9 @@ namespace sql
                 //amount = 1
                 
             });
-            //Order_DetailsList.Add(order_DetailsView);
-            objects.AddRange(order_DetailsView);
-            DataGridBasket.ItemsSource = order_DetailsView;
-            
+            List<object> objects = new List<object>();
+            objects.AddRange(Order_DetailsList);
+            DataGridBasket.ItemsSource = objects;
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
