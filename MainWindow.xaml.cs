@@ -92,28 +92,37 @@ namespace sql
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
-            //Order_DetailsList.Add(order_DetailsView);
-            var order_DetailsView = Order_DetailsList.Select(x => new
+            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
+
+            if (existedDetails != null)
             {
-                Имя = selectedPreparation.id_preparation,
-                Количество = 1
-                //id_preparation = selectedPreparation.id_preparation,
-                //amount = 1
-                
-            });
-            List<object> objects = new List<object>();
-            objects.AddRange(Order_DetailsList);
-            DataGridBasket.ItemsSource = objects;
+                existedDetails.amount += 1;
+                return;
+            }
+
+            order_details details = PharmacySystemEntities.GetContext().order_details.Create();
+            details.indent = indentCurrent;
+            details.id_indent = indentCurrent.id_indent;
+            details.id_preparation = selectedPreparation.id_preparation;
+            details.preparation = selectedPreparation;
+            details.amount = 1;
+
+            Order_DetailsList.Add(details);
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
-            indent indent = new indent
+            DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
             {
-                login = PreviewLogin.Text,
-                data_indent = DateTime.Now,
-                order_details = Order_DetailsList
-            };
-            PharmacySystemEntities.GetContext().indent.Add(indent);
+                return new
+                {
+                    name = detail.preparation.drug_name,
+                    price = detail.preparation.price,
+                    total_price = detail.preparation.price * detail.amount,
+                    amount = detail.amount
+                };
+            });
+
+            //PharmacySystemEntities.GetContext().indent.Add(indent);
             PharmacySystemEntities.GetContext().SaveChanges();
             Order_DetailsList.Clear();
         }
