@@ -91,25 +91,19 @@ namespace sql
         public List<order_details> Order_DetailsList = new List<order_details>();
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            using (PharmacySystemEntities db = new PharmacySystemEntities())
+            preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
+            var order_DetailsView = Order_DetailsList.Select(x => new
             {
-
-                var objects = db.order_details.ToList();
-                var data = objects.Select(o => new
-                {
-                    Номерпрепарата = o.id_preparation,
-                    Количесвто = 1
-                }).ToList();
-                DataGridBasket.ItemsSource = data;
-            }
-            Order_DetailsList.Add(data);
-                //preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
-            //order_details order_DetailsView = new order_details
-            //{
+                Имя = x.id_preparation,
+                Количество = 1
                 //id_preparation = selectedPreparation.id_preparation,
                 //amount = 1
                 
-            //};
+            });
+            //Order_DetailsList.Add(order_DetailsView);
+            List<object> objects = new List<object>();
+            objects.AddRange(order_DetailsView);
+            DataGridBasket.ItemsSource = objects;
             
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
