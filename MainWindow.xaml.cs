@@ -94,7 +94,7 @@ namespace sql
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
             var order_DetailsView = Order_DetailsList.Select(x => new
             {
-                Имя = x.id_preparation,
+                Имя = selectedPreparation.id_preparation,
                 Количество = 1
                 //id_preparation = selectedPreparation.id_preparation,
                 //amount = 1
@@ -103,7 +103,7 @@ namespace sql
             //Order_DetailsList.Add(order_DetailsView);
             List<object> objects = new List<object>();
             objects.AddRange(order_DetailsView);
-            DataGridBasket.ItemsSource = objects;
+            DataGridBasket.ItemsSource = order_DetailsView;
             
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
