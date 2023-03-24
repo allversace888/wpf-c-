@@ -31,7 +31,7 @@ Title="MainWindow"
             </StackPanel>
         </WrapPanel>
 
-        <ListView Background="#2e333a" Grid.Row="0" Margin="266,88,36,66" Name="LViewPreparation" Visibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Center">
+        <ListView SelectionMode="Single" Background="#2e333a" Grid.Row="0" Margin="266,88,36,66" Name="LViewPreparation" Visibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Center" MouseDoubleClick="LViewPreparation_MouseDoubleClick">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" HorizontalAlignment="Center"></WrapPanel>
@@ -55,7 +55,6 @@ Title="MainWindow"
                         <TextBlock Text="{Binding amount, StringFormat={}В наличии: {0}}" Grid.Row="3" Margin="5 5 5 1" FontSize="14" HorizontalAlignment="Left" Foreground="White"></TextBlock>
                         <TextBlock Text="{Binding release_form, StringFormat={}Форма: {0}}" Grid.Row="4" Margin="5 5 5 1" FontSize="14" HorizontalAlignment="Left" Foreground="White"></TextBlock>
                         <TextBlock Text="{Binding price, StringFormat={}{0:N2}РУБ}" Grid.Row="5" Margin="5 5 5 1" HorizontalAlignment="Center" Foreground="White" FontSize="15" FontWeight="Bold"></TextBlock>
-                        <Button x:Name="BasketAdd" Click="BasketAdd_Click"></Button>
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
@@ -197,11 +196,19 @@ Title="MainWindow"
                 Style="{StaticResource CloseBtnStyle}" Click="CloseBtn_Click" Height="35" Width="35"/>
         <Label Content="Ваш логин: " HorizontalAlignment="Left" Margin="242,10,0,0" VerticalAlignment="Top" Foreground="White" FontSize="15"/>
         <TextBox x:Name="PreviewLogin" HorizontalAlignment="Left" Margin="326,14,0,0" VerticalAlignment="Top" Width="200" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="White" FontSize="15" Height="25" IsEnabled="False"/>
-        <DataGrid x:Name="DataGridBasket" CanUserSortColumns="False" Margin="266,88,36,66" FontSize="20" Background="#2e333a" Visibility="Hidden">
+        
+        <DataGrid x:Name="DataGridBasket" SelectionMode="Single" CanUserSortColumns="False" Margin="266,88,36,66" FontSize="20" Background="#2e333a" Visibility="Visible">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Название препарата" Binding="{Binding preparation.drug_name}" Width="400" MinWidth="400" MaxWidth="400" Foreground="Black"></DataGridTextColumn>
-                <DataGridTextColumn Header="Цена" Binding="{Binding price}" Width="300" MinWidth="300" MaxWidth="300"></DataGridTextColumn>
-                <DataGridTextColumn Header="Количество" Binding="{Binding amount}" Width="200" MinWidth="200" MaxWidth="200"></DataGridTextColumn>
+                <DataGridTextColumn
+                    IsReadOnly="True"
+                    Header="Имя"
+                    Binding="{Binding Имя}"/>
+
+                <DataGridTextColumn
+                   IsReadOnly="True"
+                   Header="Количество"
+                   Binding="{Binding Количество}"/>
+
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="SetBasket" Visibility="Hidden" Click="SetBasket_Click" Content="Button" HorizontalAlignment="Left" Margin="628,596,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="White" FontSize="26" Height="43"/>
