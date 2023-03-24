@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data.Entity;
 using System.Data.SqlClient;
+using System.Threading;
+using System.Globalization;
 
 namespace sql
 {
@@ -25,7 +27,7 @@ namespace sql
         public MainWindow(string loginBox)
         {
             InitializeComponent();
-            
+
             PreviewLogin.Text = loginBox;
         }
 
@@ -84,24 +86,31 @@ namespace sql
             Search.Visibility = Visibility.Hidden;
             DataGridBasket.Visibility = Visibility.Visible;
             SetBasket.Visibility = Visibility.Visible;
-
-            
         }
 
         public List<order_details> Order_DetailsList = new List<order_details>();
-        
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
-            order_details order_DetailsView = new order_details
+            using (PharmacySystemEntities db = new PharmacySystemEntities())
             {
-                id_preparation = selectedPreparation.id_preparation,
-                amount = 1
+
+                var objects = db.order_details.ToList();
+                var data = objects.Select(o => new
+                {
+                    Номерпрепарата = o.id_preparation,
+                    Количесвто = 1
+                }).ToList();
+                DataGridBasket.ItemsSource = data;
+            }
+            Order_DetailsList.Add(data);
+                //preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
+            //order_details order_DetailsView = new order_details
+            //{
+                //id_preparation = selectedPreparation.id_preparation,
+                //amount = 1
                 
-            };
-            Order_DetailsList.Add(order_DetailsView);
+            //};
             
-            DataGridBasket.ItemsSource = Order_DetailsList;
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
