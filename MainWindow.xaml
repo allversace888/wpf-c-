@@ -202,12 +202,22 @@ Title="MainWindow"
                 <DataGridTextColumn
                     IsReadOnly="True"
                     Header="Имя"
-                    Binding="{Binding Имя}"/>
+                    Binding="{Binding name}"/>
+                
+                <DataGridTextColumn
+                    IsReadOnly="True"
+                    Header="цена"
+                    Binding="{Binding price}"/>
+
+                <DataGridTextColumn
+                    IsReadOnly="True"
+                    Header="Общая сумма"
+                    Binding="{Binding total_price}"/>
 
                 <DataGridTextColumn
                    IsReadOnly="True"
                    Header="Количество"
-                   Binding="{Binding Количество}"/>
+                   Binding="{Binding amount}"/>
 
             </DataGrid.Columns>
         </DataGrid>
