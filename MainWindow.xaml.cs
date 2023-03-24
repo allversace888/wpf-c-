@@ -50,6 +50,7 @@ namespace sql
             var currentPreparationName = currentSearch;
             currentPreparationName = currentPreparationName.Where(p => p.drug_name.ToLower().Contains(TBoxSearch.Text.ToLower())).ToList();
             LViewPreparation.ItemsSource = currentPreparationName;
+            
         }
 
         private void CloseBtn_Click(object sender, RoutedEventArgs e)
@@ -83,18 +84,24 @@ namespace sql
             Search.Visibility = Visibility.Hidden;
             DataGridBasket.Visibility = Visibility.Visible;
             SetBasket.Visibility = Visibility.Visible;
+
+            
         }
 
         public List<order_details> Order_DetailsList = new List<order_details>();
-        private void BasketAdd_Click(object sender, RoutedEventArgs e)
+        
+        private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
-            order_details order_Details = new order_details
+            order_details order_DetailsView = new order_details
             {
                 id_preparation = selectedPreparation.id_preparation,
                 amount = 1
+                
             };
-            Order_DetailsList.Add(order_Details);
+            Order_DetailsList.Add(order_DetailsView);
+            
+            DataGridBasket.ItemsSource = Order_DetailsList;
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
@@ -121,6 +128,5 @@ namespace sql
         {
             UpdatePreparation();
         }
-
     }
 }
