@@ -196,31 +196,13 @@ Title="MainWindow"
                 Style="{StaticResource CloseBtnStyle}" Click="CloseBtn_Click" Height="35" Width="35"/>
         <Label Content="Ваш логин: " HorizontalAlignment="Left" Margin="242,10,0,0" VerticalAlignment="Top" Foreground="White" FontSize="15"/>
         <TextBox x:Name="PreviewLogin" HorizontalAlignment="Left" Margin="326,14,0,0" VerticalAlignment="Top" Width="200" BorderBrush="{x:Null}" Background="{x:Null}" Foreground="White" FontSize="15" Height="25" IsEnabled="False"/>
-        
-        <DataGrid x:Name="DataGridBasket" SelectionMode="Single" CanUserSortColumns="False" Margin="266,88,36,66" FontSize="20" Background="#2e333a" Visibility="Visible">
+
+        <DataGrid x:Name="DataGridBasket" ItemsSource="{Binding }" SelectionMode="Single" RowHeaderWidth="0"  CanUserSortColumns="False" Margin="266,88,36,66" FontSize="20" Background="#2e333a" Visibility="Visible">
             <DataGrid.Columns>
-                <DataGridTextColumn
-                    IsReadOnly="True"
-                    Header="Имя"
-                    Binding="{Binding name}"/>
-                
-                <DataGridTextColumn
-                    IsReadOnly="True"
-                    Header="цена"
-                    Binding="{Binding price}"/>
-
-                <DataGridTextColumn
-                    IsReadOnly="True"
-                    Header="Общая сумма"
-                    Binding="{Binding total_price}"/>
-
-                <DataGridTextColumn
-                   IsReadOnly="True"
-                   Header="Количество"
-                   Binding="{Binding amount}"/>
-
+                <DataGridTextColumn Header="Название препарата" Binding="{Binding Name}"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Button x:Name="SetBasket" Visibility="Hidden" Click="SetBasket_Click" Content="Button" HorizontalAlignment="Left" Margin="628,596,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="White" FontSize="26" Height="43"/>
+        <Button x:Name="DeleteBasket" Visibility="Visible" Click="DeleteBasket_Click" Content="Удалить" HorizontalAlignment="Left" Margin="350,597,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="White" FontSize="26" Height="43"/>
+        <Button x:Name="SetBasket" Visibility="Visible" Click="SetBasket_Click" Content="Оформить заказ" HorizontalAlignment="Left" Margin="799,596,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="White" FontSize="26" Height="43" Width="228"/>
     </Grid>
 </Window>
