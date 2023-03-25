@@ -112,8 +112,8 @@ namespace sql
             }
 
             order_details details = PharmacySystemEntities.GetContext().order_details.Create();
-            details.indent = indentCurrent;
-            details.id_indent = indentCurrent.id_indent;
+            //details.indent = indentCurrent;
+            //details.id_indent = indentCurrent.id_indent;
             details.id_preparation = selectedPreparation.id_preparation;
             details.preparation = selectedPreparation;
             details.amount = 1;
@@ -134,7 +134,14 @@ namespace sql
         }
         private void DeleteBasket_Click(object sender, RoutedEventArgs e)
         {
+            preparation selectedPreparation = DataGridBasket.SelectedItem as preparation;
+            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
 
+            if (existedDetails != null)
+            {
+                existedDetails.amount -= 1;
+                return;
+            }
         }
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
