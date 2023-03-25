@@ -82,6 +82,17 @@ namespace sql
         }
         private void Basket_Click(object sender, RoutedEventArgs e)
         {
+            DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+            {
+                return new
+                {
+                    Name = detail.preparation.drug_name,
+                    Price = detail.preparation.price,
+                    Amount = detail.amount,
+                    Total_price = detail.preparation.price * detail.amount
+                };
+            });
+
             LViewPreparation.Visibility = Visibility.Hidden;
             Search.Visibility = Visibility.Hidden;
             DataGridBasket.Visibility = Visibility.Visible;
@@ -111,20 +122,19 @@ namespace sql
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
-            DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+            indent indent = new indent
             {
-                return new
-                {
-                    name = detail.preparation.drug_name,
-                    price = detail.preparation.price,
-                    total_price = detail.preparation.price * detail.amount,
-                    amount = detail.amount
-                };
-            });
-
-            //PharmacySystemEntities.GetContext().indent.Add(indent);
+                login = PreviewLogin.Text,
+                data_indent = DateTime.Now,
+                order_details = Order_DetailsList
+            };
+            PharmacySystemEntities.GetContext().indent.Add(indent);
             PharmacySystemEntities.GetContext().SaveChanges();
             Order_DetailsList.Clear();
+        }
+        private void DeleteBasket_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -139,5 +149,6 @@ namespace sql
         {
             UpdatePreparation();
         }
+
     }
 }
