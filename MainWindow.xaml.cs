@@ -145,6 +145,7 @@ namespace sql
             {
                 return new DetailClass
                 {
+                    id_preparation = detail.preparation.id_preparation,
                     drug_name = detail.preparation.drug_name,
                     price = detail.preparation.price,
                     amount = (int)detail.amount,
