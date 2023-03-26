@@ -84,12 +84,12 @@ namespace sql
         {
             DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
             {
-                return new
+                return new DetailClass
                 {
-                    Name = detail.preparation.drug_name,
-                    Price = detail.preparation.price,
-                    Amount = detail.amount,
-                    Total_price = detail.preparation.price * detail.amount
+                    drug_name = detail.preparation.drug_name,
+                    price = detail.preparation.price,
+                    amount = (int)detail.amount,
+                    total_price = (int)(detail.preparation.price * detail.amount)
                 };
             });
 
@@ -100,10 +100,10 @@ namespace sql
         }
 
         public List<order_details> Order_DetailsList = new List<order_details>();
-        private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e, DetailClass detailClass)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
-            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
+            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == detailClass.id_preparation);
 
             if (existedDetails != null)
             {
@@ -137,18 +137,18 @@ namespace sql
                 Order_DetailsList.Clear();
             }
         }
-        private void DeleteBasket_Click(object sender, RoutedEventArgs e)
+        private void DeleteBasket_Click(object sender, RoutedEventArgs e, DetailClass detailClass)
         {
-            preparation selectedPreparation = DataGridBasket.SelectedItem as preparation;
-            Order_DetailsList = Order_DetailsList.Where(p => p.preparation.id_preparation != selectedPreparation.id_preparation).ToList();
+            var selectedPreparation = DataGridBasket.SelectedItem;
+            Order_DetailsList = Order_DetailsList.Where(p => p.id_preparation != detailClass.id_preparation).ToList();
             DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
             {
-                return new
+                return new DetailClass
                 {
-                    Name = detail.preparation.drug_name,
-                    Price = detail.preparation.price,
-                    Amount = detail.amount,
-                    Total_price = detail.preparation.price * detail.amount
+                    drug_name = detail.preparation.drug_name,
+                    price = detail.preparation.price,
+                    amount = (int)detail.amount,
+                    total_price = (int)(detail.preparation.price * detail.amount)
                 };
             });
         }
