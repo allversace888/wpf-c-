@@ -100,10 +100,10 @@ namespace sql
         }
 
         public List<order_details> Order_DetailsList = new List<order_details>();
-        private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e, DetailClass detailClass)
+        private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
-            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == detailClass.id_preparation);
+            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
 
             if (existedDetails != null)
             {
@@ -137,10 +137,10 @@ namespace sql
                 Order_DetailsList.Clear();
             }
         }
-        private void DeleteBasket_Click(object sender, RoutedEventArgs e, DetailClass detailClass)
+        private void DeleteBasket_Click(object sender, RoutedEventArgs e)
         {
-            var selectedPreparation = DataGridBasket.SelectedItem;
-            Order_DetailsList = Order_DetailsList.Where(p => p.id_preparation != detailClass.id_preparation).ToList();
+            var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
+            Order_DetailsList = Order_DetailsList.Where(p => p.id_preparation != selectedPreparation.id_preparation).ToList();
             DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
             {
                 return new DetailClass
