@@ -80,25 +80,6 @@ namespace sql
             Search.Visibility = Visibility.Visible;
             SetBasket.Visibility = Visibility.Hidden;
         }
-        private void Basket_Click(object sender, RoutedEventArgs e)
-        {
-            DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
-            {
-                return new DetailClass
-                {
-                    drug_name = detail.preparation.drug_name,
-                    price = detail.preparation.price,
-                    amount = (int)detail.amount,
-                    total_price = (int)(detail.preparation.price * detail.amount)
-                };
-            });
-
-            LViewPreparation.Visibility = Visibility.Hidden;
-            Search.Visibility = Visibility.Hidden;
-            DataGridBasket.Visibility = Visibility.Visible;
-            SetBasket.Visibility = Visibility.Visible;
-        }
-
         public List<order_details> Order_DetailsList = new List<order_details>();
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -117,9 +98,29 @@ namespace sql
 
             Order_DetailsList.Add(details);
         }
+        private void Basket_Click(object sender, RoutedEventArgs e)
+        {
+            DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+            {
+                return new DetailClass
+                {
+                    id_preparation = detail.id_preparation,
+                    drug_name = detail.preparation.drug_name,
+                    price = detail.preparation.price,
+                    amount = (int)detail.amount,
+                    total_price = (int)(detail.preparation.price * detail.amount)
+                };
+            });
+
+            LViewPreparation.Visibility = Visibility.Hidden;
+            Search.Visibility = Visibility.Hidden;
+            DataGridBasket.Visibility = Visibility.Visible;
+            SetBasket.Visibility = Visibility.Visible;
+        }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
+            if(selectedPreparation != null)
             if (selectedPreparation.amount <= 0)
             {
                 MessageBox.Show("Препарат отсутсвует в наличии");
@@ -137,9 +138,76 @@ namespace sql
                 Order_DetailsList.Clear();
             }
         }
+
+        private void ChangeAmountAddBasket_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
+            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
+
+            if (existedDetails != null)
+            {
+                existedDetails.amount += 1;
+                DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+                {
+                    return new DetailClass
+                    {
+                        id_preparation = detail.id_preparation,
+                        drug_name = detail.preparation.drug_name,
+                        price = detail.preparation.price,
+                        amount = (int)detail.amount,
+                        total_price = (int)(detail.preparation.price * detail.amount)
+                    };
+                });
+            }
+        }
+        private void ChangeAmountDeleteBasket_Click(object sender, RoutedEventArgs e)
+        {
+
+            var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
+            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
+
+            if (existedDetails != null)
+            {
+                if (existedDetails.amount > 1)
+                {
+                    existedDetails.amount -= 1;
+                    
+                    DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+                    {
+                        return new DetailClass
+                        {
+                            id_preparation = detail.id_preparation,
+                            drug_name = detail.preparation.drug_name,
+                            price = detail.preparation.price,
+                            amount = (int)detail.amount,
+                            total_price = (int)(detail.preparation.price * detail.amount)
+                        };
+                        
+                    });
+
+                }
+                else
+                {
+                    Order_DetailsList = Order_DetailsList.Where(p => p.id_preparation != selectedPreparation.id_preparation).ToList();
+                    DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+                    {
+                        return new DetailClass
+                        {
+                            id_preparation = detail.preparation.id_preparation,
+                            drug_name = detail.preparation.drug_name,
+                            price = detail.preparation.price,
+                            amount = (int)detail.amount,
+                            total_price = (int)(detail.preparation.price * detail.amount)
+                        };
+                    });
+                }
+            }
+
+        }
         private void DeleteBasket_Click(object sender, RoutedEventArgs e)
         {
             var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
+            if(selectedPreparation != null)
             Order_DetailsList = Order_DetailsList.Where(p => p.id_preparation != selectedPreparation.id_preparation).ToList();
             DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
             {
