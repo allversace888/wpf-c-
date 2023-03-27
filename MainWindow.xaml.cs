@@ -27,7 +27,6 @@ namespace sql
         public MainWindow(string loginBox)
         {
             InitializeComponent();
-
             PreviewLogin.Text = loginBox;
         }
 
@@ -75,28 +74,37 @@ namespace sql
 
         private void Preparation_Click(object sender, RoutedEventArgs e)
         {
-            DataGridBasket.Visibility = Visibility.Hidden;
             LViewPreparation.Visibility = Visibility.Visible;
             Search.Visibility = Visibility.Visible;
+            DataGridBasket.Visibility = Visibility.Hidden;
             SetBasket.Visibility = Visibility.Hidden;
+            ChangeAmountAddBasket.Visibility = Visibility.Hidden;
+            ChangeAmountDeleteBasket.Visibility = Visibility.Hidden;
+            DeleteBasket.Visibility = Visibility.Hidden;
+            Count.Visibility = Visibility.Hidden;
         }
         public List<order_details> Order_DetailsList = new List<order_details>();
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
             order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
-
-            if (existedDetails != null)
-            {
-                existedDetails.amount += 1;
-                return;
-            }
-            order_details details = PharmacySystemEntities.GetContext().order_details.Create();
-            details.id_preparation = selectedPreparation.id_preparation;
-            details.preparation = selectedPreparation;
-            details.amount = 1;
-
-            Order_DetailsList.Add(details);
+           
+                if (existedDetails != null)
+                {
+                    existedDetails.amount += 1;
+                    return;
+                }
+                
+                if (LViewPreparation.SelectedItem != null)
+                {
+                    order_details details = PharmacySystemEntities.GetContext().order_details.Create();
+                    details.id_preparation = selectedPreparation.id_preparation;
+                    details.preparation = selectedPreparation;
+                    details.amount = 1;
+                    Order_DetailsList.Add(details);
+                    MessageBox.Show("Препарат в коризне");
+                }
+            
         }
         private void Basket_Click(object sender, RoutedEventArgs e)
         {
@@ -116,62 +124,87 @@ namespace sql
             Search.Visibility = Visibility.Hidden;
             DataGridBasket.Visibility = Visibility.Visible;
             SetBasket.Visibility = Visibility.Visible;
+            ChangeAmountAddBasket.Visibility = Visibility.Visible;
+            ChangeAmountDeleteBasket.Visibility = Visibility.Visible;
+            DeleteBasket.Visibility = Visibility.Visible;
+            Count.Visibility = Visibility.Visible;
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
-            if(selectedPreparation != null)
-            if (selectedPreparation.amount <= 0)
-            {
-                MessageBox.Show("Препарат отсутсвует в наличии");
-            }
-            else
-            {
-                indent indent = new indent
+            if (selectedPreparation != null)
+                if (selectedPreparation.amount <= 0)
                 {
-                login = PreviewLogin.Text,
-                data_indent = DateTime.Now,
-                order_details = Order_DetailsList
-                };
-                PharmacySystemEntities.GetContext().indent.Add(indent);
-                PharmacySystemEntities.GetContext().SaveChanges();
-                Order_DetailsList.Clear();
-            }
+                    MessageBox.Show("Препарат отсутсвует в наличии");
+                }
+                else
+                {
+                    if (Order_DetailsList.Count > 0)
+                    {
+                        indent indent = new indent
+                        {
+                            login = PreviewLogin.Text,
+                            data_indent = DateTime.Now,
+                            order_details = Order_DetailsList
+                        };
+                        PharmacySystemEntities.GetContext().indent.Add(indent);
+                        PharmacySystemEntities.GetContext().SaveChanges();
+                        Order_DetailsList.Clear();
+
+                        MessageBox.Show("Заказ успешно сформирован. Подробности можно узнать во вкладке -Заказы-");
+                        DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+                        {
+                            return new DetailClass
+                            {
+                                id_preparation = detail.id_preparation,
+                                drug_name = detail.preparation.drug_name,
+                                price = detail.preparation.price,
+                                amount = (int)detail.amount,
+                                total_price = (int)(detail.preparation.price * detail.amount)
+                            };
+                        });
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ваша корзина пуста =( Добавьте в нее что-то для совершения заказа");
+                    }
+                }
         }
 
         private void ChangeAmountAddBasket_Click(object sender, RoutedEventArgs e)
         {
             var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
-            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
-
-            if (existedDetails != null)
+            if (DataGridBasket.SelectedItem != null)
             {
-                existedDetails.amount += 1;
-                DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+                order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
+                if (existedDetails != null)
                 {
-                    return new DetailClass
+                    existedDetails.amount += 1;
+                    DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
                     {
-                        id_preparation = detail.id_preparation,
-                        drug_name = detail.preparation.drug_name,
-                        price = detail.preparation.price,
-                        amount = (int)detail.amount,
-                        total_price = (int)(detail.preparation.price * detail.amount)
-                    };
-                });
+                        return new DetailClass
+                        {
+                            id_preparation = detail.id_preparation,
+                            drug_name = detail.preparation.drug_name,
+                            price = detail.preparation.price,
+                            amount = (int)detail.amount,
+                            total_price = (int)(detail.preparation.price * detail.amount)
+                        };
+                    });
+                }
             }
         }
         private void ChangeAmountDeleteBasket_Click(object sender, RoutedEventArgs e)
         {
 
             var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
-            order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
 
-            if (existedDetails != null)
+            if (DataGridBasket.SelectedItem != null)
             {
+                order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
                 if (existedDetails.amount > 1)
                 {
                     existedDetails.amount -= 1;
-                    
                     DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
                     {
                         return new DetailClass
@@ -197,11 +230,13 @@ namespace sql
                             drug_name = detail.preparation.drug_name,
                             price = detail.preparation.price,
                             amount = (int)detail.amount,
-                            total_price = (int)(detail.preparation.price * detail.amount)
+                            total_price = (int)(detail.preparation.price * detail.amount),
                         };
                     });
                 }
             }
+            int sum = DetailClass.Sum(x => x.total_price);
+            return;
 
         }
         private void DeleteBasket_Click(object sender, RoutedEventArgs e)
