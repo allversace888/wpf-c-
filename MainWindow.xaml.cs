@@ -60,6 +60,7 @@ namespace sql
             {
                 Close();
             }
+
         }
 
         private void Client_Click(object sender, RoutedEventArgs e)
@@ -128,6 +129,9 @@ namespace sql
             ChangeAmountDeleteBasket.Visibility = Visibility.Visible;
             DeleteBasket.Visibility = Visibility.Visible;
             Count.Visibility = Visibility.Visible;
+
+            int totalSum = Order_DetailsList.Aggregate(0,(acc, item) => acc + item.total_price);
+            TotalPrice.Text = totalSum.ToString();
         }
         private void SetBasket_Click(object sender, RoutedEventArgs e)
         {
@@ -166,7 +170,7 @@ namespace sql
                     }
                     else
                     {
-                        MessageBox.Show("Ваша корзина пуста =( Добавьте в нее что-то для совершения заказа");
+                        MessageBox.Show("Ваша корзина пуста.");
                     }
                 }
         }
@@ -235,9 +239,6 @@ namespace sql
                     });
                 }
             }
-            int sum = DetailClass.Sum(x => x.total_price);
-            return;
-
         }
         private void DeleteBasket_Click(object sender, RoutedEventArgs e)
         {
@@ -269,6 +270,5 @@ namespace sql
         {
             UpdatePreparation();
         }
-
     }
 }
