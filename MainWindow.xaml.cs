@@ -21,13 +21,12 @@ namespace sql
 {
     public partial class MainWindow : Window
     {
-        private preparation preparationCurrent = new preparation();
-        private indent indentCurrent = new indent();
-        private order_details order_detailsCurrent = new order_details();
         public MainWindow(string loginBox)
         {
             InitializeComponent();
             PreviewLogin.Text = loginBox;
+            DataGridBasket.IsReadOnly = true;
+            DataGridIndent.IsReadOnly = true;
         }
 
         private void MaxBtn_Click(object sender, RoutedEventArgs e)
@@ -83,19 +82,25 @@ namespace sql
             ChangeAmountDeleteBasket.Visibility = Visibility.Hidden;
             DeleteBasket.Visibility = Visibility.Hidden;
             Count.Visibility = Visibility.Hidden;
+            LabelTotalPrice.Visibility = Visibility.Hidden;
+            TotalPrice.Visibility = Visibility.Hidden;
+            DataGridIndent.Visibility = Visibility.Hidden;
         }
         public List<order_details> Order_DetailsList = new List<order_details>();
         private void LViewPreparation_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
             order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
-           
+            order_details countDetails = Order_DetailsList.Find(detail => detail.amount == selectedPreparation.amount);
+
+            if (countDetails == null && selectedPreparation.amount != 0)
+            {
                 if (existedDetails != null)
                 {
                     existedDetails.amount += 1;
                     return;
                 }
-                
+
                 if (LViewPreparation.SelectedItem != null)
                 {
                     order_details details = PharmacySystemEntities.GetContext().order_details.Create();
@@ -105,6 +110,12 @@ namespace sql
                     Order_DetailsList.Add(details);
                     MessageBox.Show("Препарат в коризне");
                 }
+            }
+            else
+            {
+                MessageBox.Show("Такого количества препарата нет.");
+            }
+            
             
         }
         private void Basket_Click(object sender, RoutedEventArgs e)
@@ -129,6 +140,9 @@ namespace sql
             ChangeAmountDeleteBasket.Visibility = Visibility.Visible;
             DeleteBasket.Visibility = Visibility.Visible;
             Count.Visibility = Visibility.Visible;
+            LabelTotalPrice.Visibility = Visibility.Visible;
+            TotalPrice.Visibility = Visibility.Visible;
+            DataGridIndent.Visibility = Visibility.Hidden;
 
             int totalSum = Order_DetailsList.Aggregate(0,(acc, item) => acc + item.total_price);
             TotalPrice.Text = totalSum.ToString();
@@ -137,53 +151,29 @@ namespace sql
         {
             preparation selectedPreparation = (preparation)LViewPreparation.SelectedItem;
             if (selectedPreparation != null)
-                if (selectedPreparation.amount <= 0)
-                {
-                    MessageBox.Show("Препарат отсутсвует в наличии");
-                }
-                else
-                {
-                    if (Order_DetailsList.Count > 0)
-                    {
-                        indent indent = new indent
-                        {
-                            login = PreviewLogin.Text,
-                            data_indent = DateTime.Now,
-                            order_details = Order_DetailsList
-                        };
-                        PharmacySystemEntities.GetContext().indent.Add(indent);
-                        PharmacySystemEntities.GetContext().SaveChanges();
-                        Order_DetailsList.Clear();
-
-                        MessageBox.Show("Заказ успешно сформирован. Подробности можно узнать во вкладке -Заказы-");
-                        DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
-                        {
-                            return new DetailClass
-                            {
-                                id_preparation = detail.id_preparation,
-                                drug_name = detail.preparation.drug_name,
-                                price = detail.preparation.price,
-                                amount = (int)detail.amount,
-                                total_price = (int)(detail.preparation.price * detail.amount)
-                            };
-                        });
-                    }
-                    else
-                    {
-                        MessageBox.Show("Ваша корзина пуста.");
-                    }
-                }
-        }
-
-        private void ChangeAmountAddBasket_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
-            if (DataGridBasket.SelectedItem != null)
+            if (selectedPreparation.amount <= 0)
             {
-                order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
-                if (existedDetails != null)
+                MessageBox.Show("Препарат отсутсвует в наличии");
+            }
+            else
+            {
+                if (Order_DetailsList.Count > 0)
                 {
-                    existedDetails.amount += 1;
+                    int totalSum = Order_DetailsList.Aggregate(0, (acc, item) => acc + item.total_price);
+                    TotalPrice.Text = totalSum.ToString();
+                    indent indent = new indent
+                    {
+                        login = PreviewLogin.Text,
+                        data_indent = DateTime.Now,
+                        order_details = Order_DetailsList,
+                        status_indent = "Оформлен",
+                        total_sum = totalSum
+                    };
+                    PharmacySystemEntities.GetContext().indent.Add(indent);
+                    PharmacySystemEntities.GetContext().SaveChanges();
+                    Order_DetailsList.Clear();
+
+                    MessageBox.Show("Заказ успешно сформирован. Подробности можно узнать во вкладке -Заказы-");
                     DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
                     {
                         return new DetailClass
@@ -196,15 +186,56 @@ namespace sql
                         };
                     });
                 }
+                else
+                {
+                    MessageBox.Show("Ваша корзина пуста.");
+                }
             }
+        }
+
+        private void ChangeAmountAddBasket_Click(object sender, RoutedEventArgs e)
+        {
+            preparation selectedPreparationListView = (preparation)LViewPreparation.SelectedItem;
+            var selectedPreparationDataGrid = (DetailClass)DataGridBasket.SelectedItem;
+
+            if (DataGridBasket.SelectedItem != null)
+            {
+                order_details countDetails = Order_DetailsList.Find(detail => detail.amount == selectedPreparationListView.amount);
+                if (countDetails == null)
+                { 
+                    order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparationDataGrid.id_preparation);
+                    if (existedDetails != null && selectedPreparationListView.amount > selectedPreparationDataGrid.amount)
+                    {
+                        existedDetails.amount += 1;
+                        DataGridBasket.ItemsSource = Order_DetailsList.Select(detail =>
+                        {
+                            return new DetailClass
+                            {
+                                id_preparation = detail.id_preparation,
+                                drug_name = detail.preparation.drug_name,
+                                price = detail.preparation.price,
+                                amount = (int)detail.amount,
+                                total_price = (int)(detail.preparation.price * detail.amount)
+                            };
+                        });
+                    }
+                }   
+                else
+                {
+                    MessageBox.Show("Такого количества препарата нет.");
+                }
+            }
+            int totalSum = Order_DetailsList.Aggregate(0, (acc, item) => acc + item.total_price);
+            TotalPrice.Text = totalSum.ToString();
         }
         private void ChangeAmountDeleteBasket_Click(object sender, RoutedEventArgs e)
         {
 
             var selectedPreparation = (DetailClass)DataGridBasket.SelectedItem;
+            if (selectedPreparation != null)
 
-            if (DataGridBasket.SelectedItem != null)
-            {
+                if (DataGridBasket.SelectedItem != null)
+                {
                 order_details existedDetails = Order_DetailsList.Find(detail => detail.id_preparation == selectedPreparation.id_preparation);
                 if (existedDetails.amount > 1)
                 {
@@ -239,6 +270,8 @@ namespace sql
                     });
                 }
             }
+            int totalSum = Order_DetailsList.Aggregate(0, (acc, item) => acc + item.total_price);
+            TotalPrice.Text = totalSum.ToString();
         }
         private void DeleteBasket_Click(object sender, RoutedEventArgs e)
         {
@@ -256,6 +289,8 @@ namespace sql
                     total_price = (int)(detail.preparation.price * detail.amount)
                 };
             });
+            int totalSum = Order_DetailsList.Aggregate(0, (acc, item) => acc + item.total_price);
+            TotalPrice.Text = totalSum.ToString();
         }
 
         private void Window_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -269,6 +304,25 @@ namespace sql
         private void TBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             UpdatePreparation();
+        }
+
+        private void Indent_Click(object sender, RoutedEventArgs e)
+        {
+            LViewPreparation.Visibility = Visibility.Hidden;
+            Search.Visibility = Visibility.Hidden;
+            DataGridBasket.Visibility = Visibility.Hidden;
+            SetBasket.Visibility = Visibility.Hidden;
+            ChangeAmountAddBasket.Visibility = Visibility.Hidden;
+            ChangeAmountDeleteBasket.Visibility = Visibility.Hidden;
+            DeleteBasket.Visibility = Visibility.Hidden;
+            Count.Visibility = Visibility.Hidden;
+            LabelTotalPrice.Visibility = Visibility.Hidden;
+            TotalPrice.Visibility = Visibility.Hidden;
+            DataGridIndent.Visibility = Visibility.Visible;
+
+            var currentIndent = PharmacySystemEntities.GetContext().indent.Where(p => p.login == PreviewLogin.Text).ToList();
+            DataGridIndent.ItemsSource = currentIndent;
+
         }
     }
 }
